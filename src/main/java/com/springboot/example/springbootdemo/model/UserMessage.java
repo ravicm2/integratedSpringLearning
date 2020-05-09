@@ -19,6 +19,8 @@ public class UserMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+    @NotNull
+    private String fullName;
     @Email
     @NotNull
     private String email;
