@@ -11,8 +11,8 @@ import java.util.List;
 public class AshManagementController {
 
     List<UserMessage> userMessages = List.of(
-            new UserMessage("1", "ashwin", "ashwin@gmail.com", "9999999999", "Hi!!"),
-            new UserMessage("2", "chandraa", "chandraa@gmail.com", "8888888888", "hello !!")
+            new UserMessage("1", "ashwin", "ashwin@gmail.com", "Hi!!"),
+            new UserMessage("2", "chandraa", "chandraa@gmail.com", "hello !!")
     );
 
     @GetMapping(path = "/messages")

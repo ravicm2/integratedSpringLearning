@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
@@ -24,9 +23,6 @@ public class UserMessage {
     @Email
     @NotNull
     private String email;
-    @Valid
-    @NotNull
-    private String phoneNo;
     @NotNull
     private String message;
 }

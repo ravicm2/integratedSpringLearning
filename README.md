@@ -39,6 +39,7 @@ eg:
 google guava dependency is used to add a parameter for the Enums.
 
 ###Role Based Authentication
+make csrf.disable()
 .hasRole()
 if we give role as ADMIN the roles() method in UserDetails will append the prefix of ROLE_. So the role will be ROLE_ADMIN.
 ###Permission based authentication
@@ -59,6 +60,27 @@ checks the role and permission before executing the methods/ service.
 THis annotation replaces the antMatchers() for particular method call and for authority.
 and change configuration accordingly that you want to use @PreAuthorize instead .antMatchers
 Add @EnableGlobalMethodSecurity at BaseWebSecurityConfig class and set prepostEnabled as true.
+
+##Understanding CSRF
+CSRF- cross site request forgery
+* when the csrf isEnabled and the frontend logs in to our application,
+the spring security in our application server sends the csrf token to the frontend.
+* By using that token frontend does form submission(PUT,POST,DELETE).
+* Now the server validates the token whether it matches the sent one.
+* when the csrf token isEnabled there is no way the attacker can know what our application does with the form submittion from the front end and also he cant know what the server has generated for the csrf token.
+
+So, if we enable the csrf , then we need to pass again the token back with the form submission to make the above functionalities work.
+Thats why , when we execute service in postman with csrf disabled , it can perform only the read operation alone not others(PUT,POST,DELETE). Because we aren't sending back the csrf token and the validation at server fails and throws 403.
+
+######According to csrf, they recommend using it when there is a request has to be processed by a browser. For non-browser clients its likely good to disable it.
+
+To do post request from postman:
+* install postman intercepter in the postman
+* do a get call
+* in the cookies section, take the xsrf token
+* and pass that in the headers tab with the key X-XSRF-TOKEN and the value copied from cookies.
+
+
     
 
 

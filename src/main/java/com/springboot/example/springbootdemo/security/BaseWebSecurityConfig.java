@@ -31,11 +31,12 @@ public class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .csrf().disable() //
+                //Enable only when there is a browser connectivity . if not(using post etc) disable it
+//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                .and()
                 .authorizeRequests() //authorize the requests
                 .antMatchers("index", "/", "/css/*", "/js/*") // for all these uri matches
                 .permitAll() //permit all the uri above
-
                 .antMatchers("/api/**").hasRole(ADMIN.name()) //making this api should be handled only by admins
 
                 //All the commented like has been replaced with @PreAuthorize in each rest calls.
