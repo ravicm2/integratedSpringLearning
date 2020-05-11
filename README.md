@@ -5,6 +5,11 @@ Will be updating one by one .
 #Spring Security
 ##Basic Auth
 
+* authorization- basic
+* HTTPS recommended
+* Simple and fast
+* can't logout
+
 There are some limitations between basic auth, form based auth and JWT auth. will go one by one here . 
 
 We need to pass the username and password in the request header.
