@@ -31,31 +31,19 @@ public class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                //Enable only when there is a browser connectivity . if not(using post etc) disable it
-//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                .and()
+                .csrf().disable()
                 .authorizeRequests() //authorize the requests
                 .antMatchers("index", "/", "/css/*", "/js/*") // for all these uri matches
                 .permitAll() //permit all the uri above
                 .antMatchers("/api/**").hasRole(ADMIN.name()) //making this api should be handled only by admins
-
-                //All the commented like has been replaced with @PreAuthorize in each rest calls.
-                //below line says on this uri matching pattern for the delete method the permission should be write.
-//                .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(UserPermissions.CONTENT_WRITE.name())
-//                .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(UserPermissions.CONTENT_WRITE.name())
-//                .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(UserPermissions.CONTENT_WRITE.name())
-//
-//                // .name() or .getPermissions will work
-//                //.antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(UserPermissions.CONTENT_WRITE.getPermissions())
-//
-//                //for the get method for the matching api , the role should be either admin or admin trainee
-//                .antMatchers(HttpMethod.GET, "/management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
-
                 .anyRequest() //any request
                 .authenticated() // must be authenticated
                 .and() //and
-                .httpBasic(); // i want to use basic auth
+//                .httpBasic(); // i want to use basic auth
+                .formLogin()// i want to use form login
+                .loginPage("/login").permitAll(); // want to use my own login page.
     }
+
 
     @Override
     @Bean // to instantiate UserDetailsService.

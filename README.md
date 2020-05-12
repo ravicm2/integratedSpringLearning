@@ -85,7 +85,28 @@ To do post request from postman:
 * in the cookies section, take the xsrf token
 * and pass that in the headers tab with the key X-XSRF-TOKEN and the value copied from cookies.
 
+###Form based authentication
+* username and password
+* standard in most websites
+* forms(full control)
+* can logout
+* Https recommended
 
+#####How this works:
+* the client sends the user name and password to the server.
+* the server validates the credentials and sends OK and a cookie SESSIONID
+* All other calls sent with the same cookie ID and it is validated in server and sends response.
+* **This cookie session id expires after 30 mins of inactivity.**
+
+It uses the inMemoryDatabase to validate the cookie sessionId.
+It's good to validate using real database.
+
+* Spring thyme leaf dependency used to work with html files in spring boot.
+* Here we are going to use it to override the default login page from  spring security.
+* create a html file as a login page
+* create a new controller class to return the login page. See TemplateController.java for reference.
+
+**Todo:incomplete will learn after jwt** 
     
 
 
