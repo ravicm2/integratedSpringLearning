@@ -107,6 +107,10 @@ It's good to validate using real database.
 * create a new controller class to return the login page. See TemplateController.java for reference.
 
 **Todo:incomplete will learn after jwt** 
+
+##Database authentication
+* Instead of inMemory users , its good to create users in real DB.
+
     
 
 

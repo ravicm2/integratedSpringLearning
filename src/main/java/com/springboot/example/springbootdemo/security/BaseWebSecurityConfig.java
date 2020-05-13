@@ -1,19 +1,18 @@
 package com.springboot.example.springbootdemo.security;
 
+import com.springboot.example.springbootdemo.auth.ApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import static com.springboot.example.springbootdemo.security.UserRoles.*;
+import static com.springboot.example.springbootdemo.security.UserRoles.ADMIN;
 
 @Configuration
 @EnableWebSecurity
@@ -21,10 +20,13 @@ import static com.springboot.example.springbootdemo.security.UserRoles.*;
 public class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationUserService applicationUserService;
 
     @Autowired
-    public BaseWebSecurityConfig(PasswordEncoder passwordEncoder) {
+    public BaseWebSecurityConfig(PasswordEncoder passwordEncoder,
+                                 ApplicationUserService applicationUserService) {
         this.passwordEncoder = passwordEncoder;
+        this.applicationUserService = applicationUserService;
     }
 
     @Override
@@ -40,36 +42,20 @@ public class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated() // must be authenticated
                 .and() //and
 //                .httpBasic(); // i want to use basic auth
-                .formLogin()// i want to use form login
-                .loginPage("/login").permitAll(); // want to use my own login page.
+                .formLogin();// i want to use form login
+        //.loginPage("/login").permitAll(); // want to use my own login page.
     }
 
-
     @Override
-    @Bean // to instantiate UserDetailsService.
-    protected UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
-                .username("ashwin")
-//                .password("Ash!995")
-                .password(passwordEncoder.encode("Ash!995"))
-//                .roles(UserRoles.USER.name()) //the role will be ROLE_USER
-                .authorities(USER.getGrantedAuthorities()) //here we assign role and assigned authorities for the role
-                .build();
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider());
+    }
 
-        UserDetails adminUser = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("admin"))
-//                .roles(UserRoles.ADMIN.name()) //the role will be ROLE_ADMIN
-                .authorities(ADMIN.getGrantedAuthorities()) //here we assign role and assigned authorities for the role
-                .build();
-
-        UserDetails adminTrainee = User.builder()
-                .username("trainee")
-                .password(passwordEncoder.encode("admin_trainee"))
-//                .roles(UserRoles.ADMINTRAINEE.name()) //the role will be ROLE_ADMINTRAINEE
-                .authorities(ADMINTRAINEE.getGrantedAuthorities()) //here we assign role and assigned authorities for the role
-                .build();
-
-        return new InMemoryUserDetailsManager(user, adminUser, adminTrainee);
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(this.passwordEncoder);
+        daoAuthenticationProvider.setUserDetailsService(applicationUserService);
+        return daoAuthenticationProvider;
     }
 }
