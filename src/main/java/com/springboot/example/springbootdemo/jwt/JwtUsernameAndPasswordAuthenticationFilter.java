@@ -17,11 +17,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
 
-/**
- * Step 2.
- * Job of this class is to validate credentials.
- * Spring security does it by default and we are overriding it and providing our own implementation.
- */
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -30,11 +25,17 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         this.authenticationManager = authenticationManager;
     }
 
+    /**
+     * Step 2.
+     * Job of this method is to validate credentials.
+     * Spring security does it by default and we are overriding it and providing our own implementation.
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
         try {
+            //STEP 1.1 getting input and converting to step 1 class
             UsernameAndPasswordAuthenticationRequest authenticationRequest = new ObjectMapper()
                     .readValue(request.getInputStream(), UsernameAndPasswordAuthenticationRequest.class);
 
@@ -70,12 +71,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
-                //signature and bytes should be something very long where it prevents from unlocking the secret key
+                //signature and key should be something very long where it prevents from unlocking the secret key
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))
+                // compacting into its final String form. A signed Jwt is called a 'JWS' . so use parseClaimsJws() method
                 .compact();
 
         //send token to the client
-        response.addHeader("Authorizatin", "Bearer " + token);
+        response.addHeader("Authorization", "Bearer " + token);
     }
 }
 

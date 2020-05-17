@@ -146,9 +146,9 @@ claim method in jwts is to specify the body(payload) of the token.
 * the filters can be as many as possible from 1 to n.
 * In our case, we created a filter `JwtUsernameAndPasswordAuthenticationFilter` which extends `UsernamePasswordAuthenticationFilter` from spring security and validates the incoming credentials,
 creates token for it and sends back to client.
+* Once the work of 1 filter gets over then it needs to pass the request and response to the next filter.
 
 #######In post man you do post request of login and in headers you can find the jwt token. Paste that in the jwt.io page and check the decoded results of the encoded token.
-
 
 
 

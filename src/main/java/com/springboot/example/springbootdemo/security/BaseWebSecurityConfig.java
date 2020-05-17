@@ -1,6 +1,7 @@
 package com.springboot.example.springbootdemo.security;
 
 import com.springboot.example.springbootdemo.auth.ApplicationUserService;
+import com.springboot.example.springbootdemo.jwt.JwtTokenVerifierFilter;
 import com.springboot.example.springbootdemo.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,18 +44,14 @@ public class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // And we got authenticationManager() from WebSecurityConfigurerAdapter
                 // which extends BaseWebSecurityConfig.
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
+                //This says that JwtTokenVerifierFilter should perform after JwtUsernameAndPasswordAuthenticationFilter
+                .addFilterAfter(new JwtTokenVerifierFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests() //authorize the requests
                 .antMatchers("index", "/", "/css/*", "/js/*") // for all these uri matches
                 .permitAll() //permit all the uri above
                 .antMatchers("/api/**").hasRole(ADMIN.name()) //making this api should be handled only by admins
                 .anyRequest() //any request
                 .authenticated(); // must be authenticated
-//                .and() //and
-//                .formLogin()
-
-//                .httpBasic(); // i want to use basic auth
-//                .formLogin();// i want to use form login
-        //.loginPage("/login").permitAll(); // want to use my own login page.
     }
 
     @Override
